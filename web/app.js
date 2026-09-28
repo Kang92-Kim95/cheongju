@@ -44,6 +44,17 @@
       <span class="blog-arrow">›</span>
     </a>`;
 
+  // 공식 홈페이지 카드 (블로그 카드와 같은 모양, 썸네일 대신 아이콘)
+  const renderHomepage = (h) => `
+    <a class="blog-card official" href="${esc(h.url)}" target="_blank" rel="noopener">
+      <span class="official-icon">🏛️</span>
+      <span class="blog-text">
+        <span class="blog-title">${esc(h.title || '공식 홈페이지')}</span>
+        <span class="blog-site">공식 안내 · ${esc(new URL(h.url).hostname.replace(/^www\./, ''))}</span>
+      </span>
+      <span class="blog-arrow">›</span>
+    </a>`;
+
   function renderPost(p, showMap) {
     const photos = p.photos ?? [];
     const multi = photos.length > 1;
@@ -72,7 +83,7 @@
           ${p.comment ? `<p class="comment">${esc(p.comment)}</p>` : ''}
           ${p.menu ? `<p class="menu"><b>추천</b>${esc(p.menu)}</p>` : ''}
           ${p.tags?.length ? `<div class="tags">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
-          ${p.blogs?.length ? `<div class="blogs">${p.blogs.map(renderBlog).join('')}</div>` : ''}
+          ${p.homepage || p.blogs?.length ? `<div class="blogs">${p.homepage ? renderHomepage(p.homepage) : ''}${(p.blogs ?? []).map(renderBlog).join('')}</div>` : ''}
           ${showMap ? `
           <a class="map-btn" href="${esc(mapUrl(p))}" target="_blank" rel="noopener">
             <span class="pin"></span>카카오맵에서 보기

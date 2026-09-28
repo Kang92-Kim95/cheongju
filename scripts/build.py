@@ -35,7 +35,7 @@ OUT = ROOT / "_site"
 PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".svg"}
 MAX_SIDE = 1200
 ORDER_PREFIX = re.compile(r"^\d+[-_]")
-PLACE_FIELDS = ("name", "area", "distance", "comment", "menu", "tags", "kakao", "search", "credits")
+PLACE_FIELDS = ("name", "area", "distance", "comment", "menu", "tags", "kakao", "search", "credits", "homepage")
 USER_AGENT = "Mozilla/5.0 (compatible; cheongju-guide/1.0; +https://github.com/Kang92-Kim95/cheongju)"
 
 
