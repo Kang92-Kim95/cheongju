@@ -77,6 +77,7 @@
             ${multi ? `<div class="counter">1/${photos.length}</div>` : ''}
           </div>
           ${multi ? `<div class="dots">${photos.map((_, i) => `<span class="${i ? '' : 'on'}"></span>`).join('')}</div>` : ''}
+          ${p.caption ? `<p class="caption">${esc(p.caption)}</p>` : ''}
           ${p.credits?.length ? `<p class="credits">사진 ${p.credits.map((c) => `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.text)}</a>`).join(', ')}</p>` : ''}
         ` : ''}
         <div class="post-body">
