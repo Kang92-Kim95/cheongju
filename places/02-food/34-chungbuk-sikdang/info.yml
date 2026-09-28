@@ -1,0 +1,10 @@
+name: 충북식당
+area: 청주 명물
+distance: 율량동
+comment: |
+  30년 넘게 이어 온 시오야끼 삼겹살 집이에요.
+tags: [시오야끼, 간장삼겹살]
+search: 청주 율량동 충북식당   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/cheongkko/224380629308
