@@ -10,11 +10,16 @@
 - _ 나 . 으로 시작하는 폴더는 무시한다 (_template 등)
 - 사진은 긴 변 1200px JPEG 로 줄이고, 위치정보 등 EXIF 는 버린다
 """
+import hashlib
+import html
 import json
 import re
 import shutil
 import sys
+import urllib.request
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import yaml
 from PIL import Image, ImageOps
@@ -31,6 +36,7 @@ PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".svg"}
 MAX_SIDE = 1200
 ORDER_PREFIX = re.compile(r"^\d+[-_]")
 PLACE_FIELDS = ("name", "area", "distance", "comment", "menu", "tags", "kakao", "search", "credits")
+USER_AGENT = "Mozilla/5.0 (compatible; cheongju-guide/1.0; +https://github.com/Kang92-Kim95/cheongju)"
 
 
 def slug(path: Path) -> str:
@@ -68,6 +74,54 @@ def export_photo(src: Path, dest_dir: Path, index: int) -> Path:
     return dest
 
 
+class MetaParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.meta = {}
+
+    def handle_starttag(self, tag, attrs):
+        if tag != "meta":
+            return
+        a = dict(attrs)
+        key = a.get("property") or a.get("name")
+        if key and a.get("content") and key not in self.meta:
+            self.meta[key] = html.unescape(a["content"]).strip()
+
+
+def fetch_url(url: str) -> str:
+    """네이버 블로그 PC 주소는 본문이 iframe 이라 메타 태그가 있는 모바일 주소로 바꿔서 읽는다"""
+    u = urlparse(url)
+    if u.netloc in ("blog.naver.com", "m.blog.naver.com"):
+        q = parse_qs(u.query)
+        if "blogId" in q and "logNo" in q:
+            return f"https://m.blog.naver.com/{q['blogId'][0]}/{q['logNo'][0]}"
+        return url.replace("://blog.naver.com", "://m.blog.naver.com", 1)
+    return url
+
+
+def fetch_blog(url: str) -> dict:
+    """블로그 글의 제목 · 대표 썸네일 · 블로그 이름 (카톡 링크 미리보기와 같은 정보)"""
+    card = {"url": url, "site": urlparse(url).netloc.removeprefix("www.").removeprefix("m.")}
+    try:
+        req = urllib.request.Request(fetch_url(url), headers={"User-Agent": USER_AGENT})
+        with urllib.request.urlopen(req, timeout=10) as res:
+            parser = MetaParser()
+            parser.feed(res.read(1_000_000).decode("utf-8", "replace"))
+    except Exception as e:  # 블로그가 안 열려도 빌드는 계속, 카드는 링크만
+        print(f"  ! 블로그 미리보기 실패 {url}: {e}")
+        return card
+    m = parser.meta
+    if title := m.get("og:title") or m.get("twitter:title"):
+        card["title"] = title
+    if image := m.get("og:image") or m.get("twitter:image"):
+        card["image"] = image
+    if nickname := m.get("naverblog:nickname"):
+        card["site"] = f"{nickname} · 네이버 블로그"
+    elif site := m.get("og:site_name"):
+        card["site"] = site
+    return card
+
+
 def build_place(place_dir: Path, cat_id: str) -> dict | None:
     info_path = place_dir / "info.yml"
     rel = place_dir.relative_to(ROOT)
@@ -81,6 +135,9 @@ def build_place(place_dir: Path, cat_id: str) -> dict | None:
     place = {k: info[k] for k in PLACE_FIELDS if info.get(k)}
     if isinstance(place.get("comment"), str):
         place["comment"] = place["comment"].strip()
+    blogs = info.get("blog") or []
+    if blogs:
+        place["blogs"] = [fetch_blog(u) for u in ([blogs] if isinstance(blogs, str) else blogs)]
 
     dest_dir = OUT / "photos" / cat_id / slug(place_dir)
     dest_dir.mkdir(parents=True, exist_ok=True)
@@ -106,10 +163,20 @@ def build_category(cat_dir: Path) -> dict:
     }
 
 
+def bust_cache(index: Path, assets: list[str]):
+    """배포 후에도 휴대폰이 예전 css/js 를 쓰지 않도록 내용 해시를 주소에 붙인다"""
+    text = index.read_text(encoding="utf-8")
+    for name in assets:
+        digest = hashlib.sha1((OUT / name).read_bytes()).hexdigest()[:8]
+        text = text.replace(f'"{name}"', f'"{name}?v={digest}"')
+    index.write_text(text, encoding="utf-8")
+
+
 def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(WEB, OUT)
+    bust_cache(OUT / "index.html", ["style.css", "app.js"])
 
     categories = [build_category(d) for d in subdirs(PLACES)]
     data = {"site": load_yaml(ROOT / "site.yml"), "categories": categories}

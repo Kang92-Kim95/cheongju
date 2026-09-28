@@ -33,6 +33,17 @@
       <footer class="footer">${esc(site.footer)}</footer>`;
   }
 
+  // 블로그 후기 카드 (썸네일은 네이버가 referer 있으면 막아서 no-referrer)
+  const renderBlog = (b) => `
+    <a class="blog-card" href="${esc(b.url)}" target="_blank" rel="noopener">
+      ${b.image ? `<img src="${esc(b.image)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">` : ''}
+      <span class="blog-text">
+        <span class="blog-title">${esc(b.title || '블로그 후기 보기')}</span>
+        <span class="blog-site">${esc(b.site)}</span>
+      </span>
+      <span class="blog-arrow">›</span>
+    </a>`;
+
   function renderPost(p, showMap) {
     const photos = p.photos ?? [];
     const multi = photos.length > 1;
@@ -61,6 +72,7 @@
           ${p.comment ? `<p class="comment">${esc(p.comment)}</p>` : ''}
           ${p.menu ? `<p class="menu"><b>추천</b>${esc(p.menu)}</p>` : ''}
           ${p.tags?.length ? `<div class="tags">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
+          ${p.blogs?.length ? `<div class="blogs">${p.blogs.map(renderBlog).join('')}</div>` : ''}
           ${showMap ? `
           <a class="map-btn" href="${esc(mapUrl(p))}" target="_blank" rel="noopener">
             <span class="pin"></span>카카오맵에서 보기
