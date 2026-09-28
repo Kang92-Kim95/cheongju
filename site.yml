@@ -3,3 +3,6 @@ eyebrow: CHEONGJU GUIDE
 title: 청주, 저희가 좋아하는 곳
 subtitle: 결혼식에 와주시는 분들께 드리는 작은 가이드예요. 식 전후로 들러보세요.
 footer: with love, Kang & Kim
+# 화면 오른쪽 위에 항상 떠 있는 버튼 (없애려면 두 줄 삭제)
+invitation_label: 💌 모바일 청첩장
+invitation_url: https://makedear.com/mcard/view/tvyCNyZ

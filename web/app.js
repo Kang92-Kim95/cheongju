@@ -171,6 +171,18 @@
     }, { passive: true });
   }
 
+  // 모든 화면 오른쪽 위에 고정되는 청첩장 버튼
+  function renderInvitation() {
+    if (!site.invitation_url) return;
+    const a = document.createElement('a');
+    a.className = 'invitation';
+    a.href = site.invitation_url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = site.invitation_label || '💌 모바일 청첩장';
+    document.body.append(a);
+  }
+
   function route() {
     const [id, area] = location.hash.slice(1).split('/').map(decodeURIComponent);
     const cat = categories.find((c) => c.id === id);
@@ -185,6 +197,7 @@
     })
     .then((data) => {
       ({ site, categories } = data);
+      renderInvitation();
       window.addEventListener('hashchange', route);
       route();
     })
