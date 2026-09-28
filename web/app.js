@@ -92,26 +92,38 @@
       </article>`;
   }
 
-  // 동네(area)가 2개 이상이면 동네 필터 + 동네별 묶음으로 보여준다
-  function renderList(cat, area, showMap) {
+  const FILTER_ICONS = { '우리 추천': '👍', '대형카페': '🚗' };
+
+  // 동네(area)가 2개 이상이면 동네 필터 + 동네별 묶음으로 보여준다.
+  // _category.yml 의 filters(태그)는 동네 버튼 앞에 붙고, 누르면 그 태그만 동네별로 묶어 보여준다.
+  function renderList(cat, selected, showMap) {
     const list = cat.places;
     const areas = [...new Set(list.map((p) => p.area).filter(Boolean))];
-    if (areas.length < 2) return { chips: '', body: list.map((p) => renderPost(p, showMap)).join('') };
+    const filters = cat.filters ?? [];
+    const post = (p) => renderPost(p, showMap);
+    if (areas.length < 2 && !filters.length) return { chips: '', body: list.map(post).join('') };
 
     const base = `#${esc(cat.id)}`;
+    const chip = (value, label) => `
+      <a class="chip${value === selected ? ' on' : ''}" href="${value ? `${base}/${esc(encodeURIComponent(value))}` : base}">${esc(label)}</a>`;
     const chips = `
       <nav class="chips sub">
-        <a class="chip${area ? '' : ' on'}" href="${base}">전체</a>
-        ${areas.map((a) => `
-          <a class="chip${a === area ? ' on' : ''}" href="${base}/${esc(encodeURIComponent(a))}">${esc(a)}</a>`).join('')}
+        ${chip(undefined, '전체')}
+        ${filters.map((f) => chip(f, `${FILTER_ICONS[f] ?? '#'} ${f}`)).join('')}
+        ${areas.length > 1 ? areas.map((a) => chip(a, a)).join('') : ''}
       </nav>`;
-    const section = (a, items) => `
-      <h2 class="group">${esc(a)}<small>${items.length}곳</small></h2>
-      ${items.map((p) => renderPost(p, showMap)).join('')}`;
-    const body = area
-      ? list.filter((p) => p.area === area).map((p) => renderPost(p, showMap)).join('')
-      : areas.map((a) => section(a, list.filter((p) => p.area === a))).join('')
-        + list.filter((p) => !p.area).map((p) => renderPost(p, showMap)).join('');
+
+    const grouped = (items) => areas.map((a) => {
+      const inArea = items.filter((p) => p.area === a);
+      return inArea.length ? `
+        <h2 class="group">${esc(a)}<small>${inArea.length}곳</small></h2>
+        ${inArea.map(post).join('')}` : '';
+    }).join('') + items.filter((p) => !p.area).map(post).join('');
+
+    let body;
+    if (filters.includes(selected)) body = grouped(list.filter((p) => p.tags?.includes(selected)));
+    else if (selected) body = list.filter((p) => p.area === selected).map(post).join('');
+    else body = areas.length > 1 ? grouped(list) : list.map(post).join('');
     return { chips, body };
   }
 

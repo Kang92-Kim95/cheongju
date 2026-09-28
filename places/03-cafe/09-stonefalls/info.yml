@@ -1,0 +1,11 @@
+name: 스톤폴스
+area: 시내
+distance: 율량동
+comment: |
+  연탄빵 같은 재미있는 빵이 있고,
+  앞에 폭포가 있어서 아이들이 좋아해요.
+tags: [우리 추천, 대형카페]
+search: 청주 율량동 스톤폴스   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/baettoong_/224415053614

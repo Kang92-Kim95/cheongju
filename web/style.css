@@ -130,6 +130,7 @@ a { color: inherit; text-decoration: none; }
 .chips.sub { padding-top: 0; }
 .chips.sub .chip { padding: 4px 11px; font-size: 12.5px; color: var(--muted); }
 .chips.sub .chip.on { background: var(--soft); border-color: var(--soft); color: var(--text); }
+.chips.sub .chip.on { font-weight: 600; }
 
 .group {
   padding: 28px var(--gutter) 0;

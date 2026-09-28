@@ -1,0 +1,11 @@
+name: 후마니타스
+area: 시내
+distance: 비하동
+comment: |
+  고즈넉한 한옥 북카페예요.
+  연꽃 필 때 특히 예뻐요.
+tags: [우리 추천, 대형카페]
+search: 청주 후마니타스 북카페   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/lovebeomwon/224415110763

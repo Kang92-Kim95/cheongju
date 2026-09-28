@@ -1,0 +1,12 @@
+name: 포이드캐롯
+area: 외곽 드라이브
+distance: 휴암동 · 커넥트현대 청주
+comment: |
+  홍국쌀식빵(빨간 식빵)이 유명해요.
+  매장 방문도 좋지만 포장도 되고,
+  커넥트현대 청주에도 매장이 있어요.
+tags: [우리 추천, 대형카페]
+search: 청주 포이드캐롯   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/one_sea1/224415589754

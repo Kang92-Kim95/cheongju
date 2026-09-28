@@ -1,0 +1,10 @@
+name: 컨트리하우스
+area: 동남지구
+distance: 운동동
+comment: |
+  동남지구 근교 느낌의 대형카페예요.
+tags: [대형카페]
+search: 청주 운동동 컨트리하우스   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/myei250/224413355586

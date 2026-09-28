@@ -1,0 +1,10 @@
+name: 오치브
+area: 외곽 드라이브
+distance: 내수읍
+comment: |
+  개별 방갈로도 있는 컨셉의 대형카페예요.
+tags: [대형카페]
+search: 청주 내수 오치브   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+# kakao: https://place.map.kakao.com/
+blog:
+  - https://blog.naver.com/sparkyjoojoo/224411358077
