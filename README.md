@@ -4,27 +4,36 @@
 
 👉 https://kang92-kim95.github.io/cheongju/
 
-## 장소 추가하는 법
+## 폴더 구조
 
-1. 사진을 `images/places/<가게이름-영문>/` 폴더에 넣는다
-2. 사진 줄이기: `scripts/resize.sh images/places/<가게이름-영문>`
-3. `data/places.yml` 에 블록 하나 추가 (형식은 파일 맨 위 설명 참고)
-4. 커밋 & 푸시 → 1~2분 뒤 사이트 반영
+```
+places/                        ← 평소엔 여기만
+├── 03-soju/                   카테고리 (앞 번호 = 화면 순서)
+│   ├── _category.yml          카테고리 이름 · 이모지 · 설명
+│   ├── 01-samgyeopsal/        가게 하나 = 폴더 하나 (앞 번호 = 순서)
+│   │   ├── info.yml           이름 · 코멘트 · 카카오맵 링크
+│   │   ├── 1.jpg              사진 (파일 이름순으로 옆으로 넘겨짐)
+│   │   └── 2.jpg
+│   └── 02-gopchang/
+└── _template/info.yml         새 가게 복사용 틀
+site.yml                       첫 화면 제목 · 문구
+web/                           화면 코드
+scripts/                       빌드 · 미리보기 · 사진 줄이기
+```
 
-GitHub 웹에서 `data/places.yml` 연필 버튼으로 바로 고쳐도 됩니다.
+## 가게 추가하는 법
 
-## 파일 구조
+1. `places/_template` 폴더를 원하는 카테고리 안에 복사하고 이름 변경 (예: `places/03-soju/02-gopchang`)
+2. 사진 넣기 — jpg / png / heic 다 됨. 대표 사진을 `1.jpg` 로
+3. `info.yml` 채우기 (`name` 만 필수)
+4. 커밋 & 푸시 → GitHub Actions 가 빌드 · 배포 (1~2분)
 
-| 파일 | 내용 |
-|---|---|
-| `data/site.yml` | 첫 화면 제목 · 문구 |
-| `data/categories.yml` | 카테고리 (순서 · 이모지 · 설명) |
-| `data/places.yml` | 장소 목록 |
-| `images/places/` | 사진 |
+폴더 이름은 영문 소문자 + 하이픈. 화면엔 `info.yml` 의 한글 이름이 나와요.
+카테고리 추가도 같은 방식: `places/07-xxx/_category.yml` 만들면 끝.
 
 ## 로컬 미리보기
 
 ```bash
-python3 -m http.server 8770
+scripts/preview.sh
 ```
-http://localhost:8770 (브라우저 개발자도구에서 모바일 화면으로)
+→ http://localhost:8770 (`uv` 필요)

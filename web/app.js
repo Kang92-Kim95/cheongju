@@ -1,18 +1,10 @@
 (() => {
   const app = document.getElementById('app');
-  let site, categories, places;
+  let site, categories;
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
   ));
-
-  async function loadYaml(path) {
-    const res = await fetch(path, { cache: 'no-cache' });
-    if (!res.ok) throw new Error(`${path} ${res.status}`);
-    return jsyaml.load(await res.text()) ?? [];
-  }
-
-  const placesOf = (catId) => places.filter((p) => p.category === catId);
 
   // 카카오맵 링크가 없으면 이름으로 검색 링크를 만든다
   const mapUrl = (p) => p.kakao || `https://map.kakao.com/link/search/${encodeURIComponent(`청주 ${p.name}`)}`;
@@ -27,7 +19,7 @@
       </header>
       <nav class="grid">
         ${categories.map((c) => {
-          const n = placesOf(c.id).length;
+          const n = c.places.length;
           return `
             <a class="cat-card${n ? '' : ' empty'}" href="#${esc(c.id)}">
               <span class="emoji">${esc(c.emoji)}</span>
@@ -55,7 +47,7 @@
             <div class="carousel">
               ${photos.map((src, i) => `
                 <div class="slide">
-                  <img src="images/places/${esc(src)}" alt="${esc(p.name)} 사진 ${i + 1}"
+                  <img src="${esc(src)}" alt="${esc(p.name)} 사진 ${i + 1}"
                        loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">
                 </div>`).join('')}
             </div>
@@ -64,7 +56,7 @@
           ${multi ? `<div class="dots">${photos.map((_, i) => `<span class="${i ? '' : 'on'}"></span>`).join('')}</div>` : ''}
         ` : ''}
         <div class="post-body">
-          ${p.comment ? `<p class="comment">${esc(String(p.comment).trim())}</p>` : ''}
+          ${p.comment ? `<p class="comment">${esc(p.comment)}</p>` : ''}
           ${p.menu ? `<p class="menu"><b>추천</b>${esc(p.menu)}</p>` : ''}
           ${p.tags?.length ? `<div class="tags">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
           <a class="map-btn" href="${esc(mapUrl(p))}" target="_blank" rel="noopener">
@@ -75,7 +67,7 @@
   }
 
   function renderCategory(cat) {
-    const list = placesOf(cat.id);
+    const list = cat.places;
     document.title = `${cat.name} · ${site.title}`;
     app.innerHTML = `
       <header class="topbar">
@@ -120,9 +112,13 @@
     window.scrollTo(0, 0);
   }
 
-  Promise.all([loadYaml('data/site.yml'), loadYaml('data/categories.yml'), loadYaml('data/places.yml')])
-    .then(([s, c, p]) => {
-      site = s; categories = c; places = p;
+  fetch('data.json', { cache: 'no-cache' })
+    .then((res) => {
+      if (!res.ok) throw new Error(`data.json ${res.status}`);
+      return res.json();
+    })
+    .then((data) => {
+      ({ site, categories } = data);
       window.addEventListener('hashchange', route);
       route();
     })
