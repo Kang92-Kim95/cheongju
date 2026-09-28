@@ -1,6 +1,6 @@
 #!/bin/bash
 # 사진을 모바일용으로 줄인다 (긴 변 1200px, JPEG 품질 80). macOS 기본 도구 sips 사용.
-# 사용법: scripts/resize.sh places/03-soju/01-samgyeopsal
+# 사용법: scripts/resize.sh places/02-food/01-samgyeopsal
 # (배포할 때 자동으로도 줄여지지만, 저장소 용량을 아끼려면 넣기 전에 한 번 돌리기)
 # - HEIC/PNG 는 .jpg 로 변환하고 원본은 지운다
 set -euo pipefail

@@ -101,6 +101,7 @@ def build_category(cat_dir: Path) -> dict:
         "name": meta.get("name", cat_id),
         "emoji": meta.get("emoji", ""),
         "desc": meta.get("desc", ""),
+        "type": meta.get("type", "places"),
         "places": places,
     }
 

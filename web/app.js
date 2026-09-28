@@ -20,19 +20,20 @@
       <nav class="grid">
         ${categories.map((c) => {
           const n = c.places.length;
+          const count = !n ? '준비 중' : c.type === 'intro' ? '읽어보기' : `${n}곳`;
           return `
             <a class="cat-card${n ? '' : ' empty'}" href="#${esc(c.id)}">
               <span class="emoji">${esc(c.emoji)}</span>
               <span class="name">${esc(c.name)}</span>
               <span class="desc">${esc(c.desc)}</span>
-              <span class="count">${n ? `${n}곳` : '준비 중'}</span>
+              <span class="count">${count}</span>
             </a>`;
         }).join('')}
       </nav>
       <footer class="footer">${esc(site.footer)}</footer>`;
   }
 
-  function renderPost(p) {
+  function renderPost(p, showMap) {
     const photos = p.photos ?? [];
     const multi = photos.length > 1;
     const meta = [p.area, p.distance].filter(Boolean).map(esc).join(' · ');
@@ -59,28 +60,30 @@
           ${p.comment ? `<p class="comment">${esc(p.comment)}</p>` : ''}
           ${p.menu ? `<p class="menu"><b>추천</b>${esc(p.menu)}</p>` : ''}
           ${p.tags?.length ? `<div class="tags">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
+          ${showMap ? `
           <a class="map-btn" href="${esc(mapUrl(p))}" target="_blank" rel="noopener">
             <span class="pin"></span>카카오맵에서 보기
-          </a>
+          </a>` : ''}
         </div>
       </article>`;
   }
 
   function renderCategory(cat) {
     const list = cat.places;
+    const isIntro = cat.type === 'intro';
     document.title = `${cat.name} · ${site.title}`;
     app.innerHTML = `
       <header class="topbar">
         <div class="topbar-row">
           <a class="back" href="#" aria-label="처음으로">‹</a>
-          <div class="topbar-title">${esc(cat.emoji)} ${esc(cat.name)}<small>${list.length}곳</small></div>
+          <div class="topbar-title">${esc(cat.emoji)} ${esc(cat.name)}${isIntro ? '' : `<small>${list.length}곳</small>`}</div>
         </div>
         <nav class="chips">
           ${categories.map((c) => `
             <a class="chip${c.id === cat.id ? ' on' : ''}" href="#${esc(c.id)}">${esc(c.emoji)} ${esc(c.name)}</a>`).join('')}
         </nav>
       </header>
-      ${list.length ? list.map(renderPost).join('') : '<p class="empty-state">곧 채워질 예정이에요 🙂</p>'}`;
+      ${list.length ? list.map((p) => renderPost(p, !isIntro)).join('') : '<p class="empty-state">곧 채워질 예정이에요 🙂</p>'}`;
 
     app.querySelector('.chip.on')?.scrollIntoView({ inline: 'center', block: 'nearest' });
     app.querySelectorAll('.post').forEach(bindCarousel);
