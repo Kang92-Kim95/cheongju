@@ -7,7 +7,7 @@
   ));
 
   // 카카오맵 링크가 없으면 이름으로 검색 링크를 만든다
-  const mapUrl = (p) => p.kakao || `https://map.kakao.com/link/search/${encodeURIComponent(`청주 ${p.name}`)}`;
+  const mapUrl = (p) => p.kakao || `https://map.kakao.com/link/search/${encodeURIComponent(p.search || `청주 ${p.name}`)}`;
 
   function renderHome() {
     document.title = site.title;
@@ -68,9 +68,33 @@
       </article>`;
   }
 
-  function renderCategory(cat) {
+  // 동네(area)가 2개 이상이면 동네 필터 + 동네별 묶음으로 보여준다
+  function renderList(cat, area, showMap) {
+    const list = cat.places;
+    const areas = [...new Set(list.map((p) => p.area).filter(Boolean))];
+    if (areas.length < 2) return { chips: '', body: list.map((p) => renderPost(p, showMap)).join('') };
+
+    const base = `#${esc(cat.id)}`;
+    const chips = `
+      <nav class="chips sub">
+        <a class="chip${area ? '' : ' on'}" href="${base}">전체</a>
+        ${areas.map((a) => `
+          <a class="chip${a === area ? ' on' : ''}" href="${base}/${esc(encodeURIComponent(a))}">${esc(a)}</a>`).join('')}
+      </nav>`;
+    const section = (a, items) => `
+      <h2 class="group">${esc(a)}<small>${items.length}곳</small></h2>
+      ${items.map((p) => renderPost(p, showMap)).join('')}`;
+    const body = area
+      ? list.filter((p) => p.area === area).map((p) => renderPost(p, showMap)).join('')
+      : areas.map((a) => section(a, list.filter((p) => p.area === a))).join('')
+        + list.filter((p) => !p.area).map((p) => renderPost(p, showMap)).join('');
+    return { chips, body };
+  }
+
+  function renderCategory(cat, area) {
     const list = cat.places;
     const isIntro = cat.type === 'intro';
+    const { chips, body } = renderList(cat, area, !isIntro);
     document.title = `${cat.name} · ${site.title}`;
     app.innerHTML = `
       <header class="topbar">
@@ -82,10 +106,11 @@
           ${categories.map((c) => `
             <a class="chip${c.id === cat.id ? ' on' : ''}" href="#${esc(c.id)}">${esc(c.emoji)} ${esc(c.name)}</a>`).join('')}
         </nav>
+        ${chips}
       </header>
-      ${list.length ? list.map((p) => renderPost(p, !isIntro)).join('') : '<p class="empty-state">곧 채워질 예정이에요 🙂</p>'}`;
+      ${list.length ? body : '<p class="empty-state">곧 채워질 예정이에요 🙂</p>'}`;
 
-    app.querySelector('.chip.on')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+    app.querySelectorAll('.chip.on').forEach((c) => c.scrollIntoView({ inline: 'center', block: 'nearest' }));
     app.querySelectorAll('.post').forEach(bindCarousel);
   }
 
@@ -109,9 +134,9 @@
   }
 
   function route() {
-    const id = decodeURIComponent(location.hash.slice(1));
+    const [id, area] = location.hash.slice(1).split('/').map(decodeURIComponent);
     const cat = categories.find((c) => c.id === id);
-    cat ? renderCategory(cat) : renderHome();
+    cat ? renderCategory(cat, area) : renderHome();
     window.scrollTo(0, 0);
   }
 
