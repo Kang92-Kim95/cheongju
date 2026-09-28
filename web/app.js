@@ -113,14 +113,8 @@
         ${areas.length > 1 ? areas.map((a) => chip(a, a)).join('') : ''}
       </nav>`;
 
-    // pin: true 인 곳은 동네 묶음보다 먼저 '꼭 가보세요'로 올린다
-    const grouped = (all) => {
-      const pinned = all.filter((p) => p.pin);
-      const items = all.filter((p) => !p.pin);
-      return (pinned.length ? `
-        <h2 class="group">⭐ 꼭 가보세요<small>${pinned.length}곳</small></h2>
-        ${pinned.map(post).join('')}` : '') + byArea(items);
-    };
+    // pin: true 인 곳은 동네 묶음보다 먼저 맨 위에 보여준다
+    const grouped = (all) => all.filter((p) => p.pin).map(post).join('') + byArea(all.filter((p) => !p.pin));
     const byArea = (items) => areas.map((a) => {
       const inArea = items.filter((p) => p.area === a);
       return inArea.length ? `
