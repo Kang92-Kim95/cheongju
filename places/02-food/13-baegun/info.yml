@@ -1,5 +1,6 @@
 name: 백운식당
-area: 용암동
+area: 청주 명물
+distance: 용암동
 search: 청주 용암동 백운식당   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
 # kakao: https://place.map.kakao.com/
 # comment: 우리 한마디

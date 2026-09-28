@@ -98,7 +98,9 @@
   // _category.yml 의 filters(태그)는 동네 버튼 앞에 붙고, 누르면 그 태그만 동네별로 묶어 보여준다.
   function renderList(cat, selected, showMap) {
     const list = cat.places;
-    const areas = [...new Set(list.map((p) => p.area).filter(Boolean))];
+    // area_order 에 적힌 동네를 먼저, 나머지는 나온 순서대로
+    const order = cat.area_order ?? [];
+    const areas = [...new Set([...order, ...list.map((p) => p.area)].filter((a) => a && list.some((p) => p.area === a)))];
     const filters = cat.filters ?? [];
     const post = (p) => renderPost(p, showMap);
     if (areas.length < 2 && !filters.length) return { chips: '', body: list.map(post).join('') };

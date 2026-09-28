@@ -160,6 +160,7 @@ def build_category(cat_dir: Path) -> dict:
         "desc": meta.get("desc", ""),
         "type": meta.get("type", "places"),
         "filters": meta.get("filters", []),
+        "area_order": meta.get("area_order", []),
         "places": places,
     }
 

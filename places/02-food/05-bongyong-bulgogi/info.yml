@@ -1,5 +1,6 @@
 name: 봉용불고기
-area: 시내
+area: 청주 명물
+distance: 시내
 tags: [불고기]
 search: 청주 봉용불고기   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
 # kakao: https://place.map.kakao.com/
