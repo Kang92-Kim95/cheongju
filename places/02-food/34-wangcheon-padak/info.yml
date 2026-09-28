@@ -1,9 +1,12 @@
-name: 왕천파닭
+name: 왕천파닭 동남지구점
 area: 청주 명물
+comment: |
+  홀에서 먹어야 제맛이에요.
+  투썸플레이스 지하주차장에 몰래 주차 가능!
+  (양심상 투썸에서 디저트 하나 포장하면 돼요 😉)
 tags: [파닭, 홀에서 드세요]
-search: 청주 왕천파닭   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
+search: 청주 동남지구 왕천파닭   # 카카오맵 검색어. 정확한 링크가 있으면 아래 kakao 에 넣기
 # kakao: https://place.map.kakao.com/
-# comment: 우리 한마디
 # menu: 추천 메뉴
 blog:
-  - https://blog.naver.com/baettoong_/224355668033
+  - https://blog.naver.com/fulltrip/224363018916
