@@ -30,7 +30,7 @@ OUT = ROOT / "_site"
 PHOTO_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".svg"}
 MAX_SIDE = 1200
 ORDER_PREFIX = re.compile(r"^\d+[-_]")
-PLACE_FIELDS = ("name", "area", "distance", "comment", "menu", "tags", "kakao", "search")
+PLACE_FIELDS = ("name", "area", "distance", "comment", "menu", "tags", "kakao", "search", "credits")
 
 
 def slug(path: Path) -> str:

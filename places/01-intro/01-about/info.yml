@@ -2,3 +2,8 @@ name: 청주는 어떤 곳?
 comment: |
   (샘플) 저희가 만나고 함께 지낸 도시, 청주를 소개해요.
   여기에 청주 이야기나 저희 추억을 적어 주세요.
+credits:   # 사진 출처 (순서대로). 공개 라이선스 사진이라 출처 표시가 필요해요
+  - text: 한국관광공사 김지호 · 공공누리 제1유형
+    url: https://commons.wikimedia.org/wiki/File:Cheongju-si.jpg
+  - text: Neoalpha · CC0
+    url: https://commons.wikimedia.org/wiki/File:Musim_River.jpg
