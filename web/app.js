@@ -113,7 +113,15 @@
         ${areas.length > 1 ? areas.map((a) => chip(a, a)).join('') : ''}
       </nav>`;
 
-    const grouped = (items) => areas.map((a) => {
+    // pin: true 인 곳은 동네 묶음보다 먼저 '꼭 가보세요'로 올린다
+    const grouped = (all) => {
+      const pinned = all.filter((p) => p.pin);
+      const items = all.filter((p) => !p.pin);
+      return (pinned.length ? `
+        <h2 class="group">⭐ 꼭 가보세요<small>${pinned.length}곳</small></h2>
+        ${pinned.map(post).join('')}` : '') + byArea(items);
+    };
+    const byArea = (items) => areas.map((a) => {
       const inArea = items.filter((p) => p.area === a);
       return inArea.length ? `
         <h2 class="group">${esc(a)}<small>${inArea.length}곳</small></h2>
@@ -122,7 +130,7 @@
 
     let body;
     if (filters.includes(selected)) body = grouped(list.filter((p) => p.tags?.includes(selected)));
-    else if (selected) body = list.filter((p) => p.area === selected).map(post).join('');
+    else if (selected) body = list.filter((p) => p.area === selected).sort((a, b) => !!b.pin - !!a.pin).map(post).join('');
     else body = areas.length > 1 ? grouped(list) : list.map(post).join('');
     return { chips, body };
   }

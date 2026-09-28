@@ -1,4 +1,5 @@
 name: 뵈르뵈르하우스
+pin: true   # 목록 맨 위 '꼭 가보세요'에 고정
 area: 외곽 드라이브
 distance: 오송 (본점)
 comment: |
